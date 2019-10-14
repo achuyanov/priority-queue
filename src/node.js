@@ -10,23 +10,29 @@ class Node {
 	appendChild(node) {
 		if (!this.left) {
 			this.left = node;
+			node.parent = this;
 		} else if (!this.right) {
 			this.right = node;
+			node.parent = this;
+		} else {
+			return this;
 		}
 	}
 
 	removeChild(node) {
 		switch (node) {
 			case this.left:
+				this.left.parent = null;
 				this.left = null;
 				break;
 			case this.right:
+				this.right.parent= null;
 				this.right = null;
 				break;
-			defauthis.left:
-				throw new Error('removeChild');
+			default:
+				throw new Error("removeChild");
 		}
-		node.parent = null;
+		
 	}
 
 	remove() {
@@ -36,59 +42,32 @@ class Node {
 	}
 
 	swapWithParent() {
-
-		/**				 |                			    |
-		       		   par              			  par                          
-			  		 /   \	    				   	/    \
-		    	 this   parent.right 	  parent.left    this 
-		   		 /  \        		      				 /  \
-		  this.left  this.right 		         this.left  this.right     **/
-
-
 		if (this.parent) {
-			let parent = this.parent;
-			let tmp = any;
+			let par = this.parent;
+			//update left right child
+			if (this.left) this.left.parent = par;
+			if (this.right) this.right.parent = par;
 
-			// update child left right	
-			if (this.left) {
-				this.left.parent = parent;
-			}
-			if (this.right) {
-				this.right.parent = parent;
-			}
-
-			// switch parent child
-			if (this === parent.left) {
-				if (parent.right) {
-					parent.right.parent = this;
-				}
-				tmp = parent.right;
-				parent.left = this.left;
-				parent.right = this.right;
-				this.left = parent;
-				this.right = tmp;
-			} else {
-				parent.left.parent = this;
-				tmp = parent.left;
-				parent.left = this.left;
-				parent.right = this.right;
-				this.left = tmp;
-				this.right = parent;
-			}
-
-			// update parent of parent if exist
-			if (parent.parent) {
-				if (parent === parent.parent.left) {
-					parent.parent.left = this;
+			// update this.parent.parent
+			if (par.parent) {
+				if (par.parent.left === par) {
+					par.parent.left = this;
 				} else {
-					parent.parent.right = this;
+					par.parent.right = this;
 				}
 			}
-			// switch parent value;
-			tmp = parent.parent;
-			parent.parent = this;
-			parent = tmp;
+			// swap node with parent
+			if (par.left === this) {
+				if (par.right) par.right.parent = this;
+				[par.left, par.right, par.parent, this.left, this.right, this.parent] =
+				[this.left, this.right, this, this.parent, par.right, par.parent];
+			} else {
+				par.left.parent = this;
+				[par.left, par.right, par.parent, this.left, this.right, this.parent] =
+				[this.left, this.right, this, par.left, this.parent, par.parent];
+			}
 		}
 	}
+}
 
-	module.expothis.rights = Node;
+module.exports = Node;
