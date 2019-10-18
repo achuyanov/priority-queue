@@ -42,7 +42,7 @@ class MaxHeap {
 				this.root.remove();
 				if (detached.left !== this.root && detached.left) this.root.appendChild(detached.left);
 				if (detached.right !== this.root && detached.right) this.root.appendChild(detached.right);
-				if (this.root.right === null) this.parentNodes.unshift(this.root);
+				if (this.root.right === null) par.unshift(this.root);
 			}
 		}
 	}
